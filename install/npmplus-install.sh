@@ -326,9 +326,8 @@ while true; do
         msg_error "timed out waiting for crowdsec.conf to be present"
         exit 1
     fi
-    msg_info "waiting for files to be present. pausing for 10 seconds"
-    sleep 10
-    (( timeout += 10 ))
+    sleep 2
+    (( timeout += 2 ))
 done
 
 if [[ "$(sed -n 's/^ENABLED=//p' "/opt/npmplus/crowdsec/crowdsec.conf" 2>/dev/null)" == "true"* ]]; then
@@ -348,7 +347,7 @@ if [[ -z $(sed -n 's/^API_KEY=//p' "/opt/npmplus/crowdsec/crowdsec.conf" 2>/dev/
     if [ $add_status -ne 0 ] && echo "$add_output" | grep -qi "already exists"; then
         msg_error "bouncer npmplus already exists, deleting and recreating"
         docker exec crowdsec cscli bouncers delete npmplus > /dev/null
-        add_output=$(docker exec crowdsec cscli bouncers add npmplus 2>&1)
+        add_output=$(docker exec crowdsec cscli bouncers add npmplus 2>&1 || true )
         add_status=$?
     fi
 
